@@ -73,12 +73,14 @@ export default {
         result.push(item);
       });
       if (flag === 2) {
+        //取status===2的树
         return result.filter(
           (val) =>
             (val.level === 1 && val.status === 2) ||
             (val?.children && val.children.length)
         );
       } else {
+        //取status!==2的树
         return result.filter((val) => {
           if (val.level < 1) {
             return val;
