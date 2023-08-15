@@ -1,95 +1,58 @@
 <template>
-  <div>
-    测试utils
-    <div>{{ processData }}</div>
-  </div>
+    <div>
+        
+        <div>{{this.questionList}}</div>
+        <hr>
+   
+    </div>
 </template>
 <script>
-export default {
-  name: "ArrayUtils",
-  data() {
-    return {
-      arr: [
-        {
-          name: "test1",
-          level: 0,
-          status: 0,
-        },
-        {
-          name: "test2",
-          level: 0,
-          status: 0,
-          children: [
-            {
-              name: "test21",
-              level: 1,
-              status: 0,
-            },
-            {
-              name: "test22",
-              level: 1,
-              status: 0,
-            },
-          ],
-        },
-        {
-          name: "test3",
-          level: 0,
-          status: 0,
-          children: [
-            {
-              name: "test31",
-              level: 1,
-              status: 0,
-            },
-            {
-              name: "test32",
-              level: 1,
-              status: 1,
-            },
-            {
-              name: "test33",
-              level: 1,
-              status: 2,
-            },
-          ],
-        },
-      ],
-      processData: [],
-    };
-  },
-  mounted() {
-    this.processData = this.handleTagsTree(this.arr, 1);
-  },
-  methods: {
-    handleTagsTree(children, flag) {
-      const result = [];
-
-      children.forEach((item) => {
-        //如果存在children下一层，则递归遍历并赋值
-        if (item?.children && item?.children.length) {
-          item.children = this.handleTagsTree(item.children, flag);
+export default{
+    data(){
+        return {
+            questionList:[
+                {"id":"25","name":"测试","status":0,"level":3,"sub_trees":[
+                    {"id":"25","name":"测试","status":0,"level":4},
+                    {"id":"25","name":"测试","status":1,"level":4},
+                    {"id":"25","name":"测试","status":2,"level":4}
+                ]},
+                {"id":"25","name":"测试","status":0,"level":3},
+            ],
+            bb:[]
         }
-        result.push(item);
-      });
-      if (flag === 2) {
-        //取status===2的树
-        return result.filter(
-          (val) =>
-            (val.level === 1 && val.status === 2) ||
-            (val?.children && val.children.length)
-        );
-      } else {
-        //取status!==2的树
-        return result.filter((val) => {
-          if (val.level < 1) {
-            return val;
-          } else {
-            return val.status !== 2 || (val?.children && val.children.length);
-          }
-        });
-      }
     },
-  },
-};
+    mounted(){
+        this.bb = this.treeFilter(this.questionList, val => val.status === 2);
+        console.log(this.bb)
+    },
+    methods:{
+        treeFilter(tree, func) {
+            // 使用map复制一下节点，避免修改到原树
+            return tree
+            .map(node => ({ ...node }))
+            .filter(node => {
+                node.sub_trees = node.sub_trees && this.treeFilter(node.sub_trees, func);
+                return func(node) || (node.sub_trees && node.sub_trees.length);
+            });
+        },
+    }
+}
 </script>
+<style>
+.top1{
+    margin-left: 5px;
+    color: aliceblue;
+}
+.top2{
+    margin-left: 45px;
+    color: blueviolet;
+}
+.top1{
+    margin-left: 75px;
+    color: blue;
+}
+.top2{
+    margin-left: 105px;
+    color: aqua;
+}
+</style>
