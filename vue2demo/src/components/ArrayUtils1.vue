@@ -1,7 +1,7 @@
 <template>
     <div>
         
-        <div>{{this.questionList}}</div>
+        <div>{{this.aaa}}</div>
         <hr>
    
     </div>
@@ -10,7 +10,7 @@
 export default{
     data(){
         return {
-            questionList:[
+            aaa:[
                 {"id":"25","name":"测试","status":0,"level":3,"sub_trees":[
                     {"id":"25","name":"测试","status":0,"level":4},
                     {"id":"25","name":"测试","status":1,"level":4},
@@ -22,7 +22,7 @@ export default{
         }
     },
     mounted(){
-        this.bb = this.treeFilter(this.questionList, val => val.status === 2);
+        this.bb = this.treeFilter(this.aaa, val => val.status === 2);
         console.log(this.bb)
     },
     methods:{
