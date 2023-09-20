@@ -1,4 +1,5 @@
 import type { Directive } from 'vue'
+let aa = false
 const directive: Directive = {
   // 指令所在组件的 VNode 及其子 VNode 全部更新后调用
   mounted(el: HTMLElement) {
@@ -72,16 +73,42 @@ const directive: Directive = {
         document.body.appendChild(kxmTooltipDom)
         // 浮层中的文字
         document.getElementById('kxm-tooltip')!.innerHTML = el.innerText
+        kxmTooltipDom.onmouseenter = () => {
+          aa = true
+        }
+        kxmTooltipDom.onmouseleave = () => {
+          console.log('kxmTooltipDom leave')
+          aa = false
+          const kxmTooltipDom = document.getElementById('kxm-tooltip')
+          if (kxmTooltipDom) {
+            document.body.removeChild(kxmTooltipDom)
+            kxmTooltipDom.onmouseenter = null
+            kxmTooltipDom.onmouseleave = null
+          }
+        }
       }
       el.onmouseleave = () => {
         /* 第5步：鼠标移出`onmouseleave`需要移出title显示的元素 */
         // 找到浮层元素并移出
-        const kxmTooltipDom = document.getElementById('kxm-tooltip')
-        kxmTooltipDom && document.body.removeChild(kxmTooltipDom)
+        setTimeout(() => {
+          if (!aa) {
+            console.log('el leave', aa)
+            const kxmTooltipDom = document.getElementById('kxm-tooltip')
+            if (kxmTooltipDom) {
+              document.body.removeChild(kxmTooltipDom)
+              kxmTooltipDom.onmouseenter = null
+              kxmTooltipDom.onmouseleave = null
+            }
+          }
+        }, 10)
       }
     }
     // 需要注意：更新完之后需要移除容器，不然body里会多一个span元素内容
     document.body.removeChild(textSpan)
+  },
+  unmounted: (el) => {
+    el.onmouseenter = null
+    el.onmouseleave = null
   }
 }
 
